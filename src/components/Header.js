@@ -1,14 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 const Header = () => {
-    
-    function addWords () {
-        console.log('단어 추가');
-    }
-
-    function addDays () {
-        console.log('날짜 추가');
-    }
 
     return(
         <div className="header">
@@ -18,13 +10,13 @@ const Header = () => {
         </h1>
         <div className="menu">
           {/* <Link to="/create_word" className="link"> */}
-          <button onClick={addWords}>
+          <Link className='link' to='/create_word'>
             단어 추가
-          </button>
+          </Link>
           {/* <Link to="/create_day" className="link"> */}
-          <button onClick={addDays}>
+          <Link className='link' to='/create_day'>
             Day 추가
-          </button>
+          </Link>
         </div>
       </div>
     )

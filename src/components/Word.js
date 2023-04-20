@@ -1,32 +1,66 @@
 import React, { useState } from 'react';
 
-const Word = ({word}) => {
+const Word = ({word : w}) => {
 
-    const [langageChange, setLangageChange] = useState(word.kor);
+    const [word, setWord] = useState(w)
+    const [isShow, setIsShow] = useState(false);
     const [isDone, setIsDone] = useState(word.isDone);
-
-    const showChange = () => {
-        setLangageChange(!langageChange); 
+    console.log(w);
+    const toggleShow = () => {
+        setIsShow(!isShow);
     }
 
-    function toggleDone() {
-        setIsDone(!isDone);
+    const toggleDone = () =>{
+        fetch(`http://localhost:3001/words/${word.id}`,{
+            method: 'PUT',
+            headers: {
+                'Content-Type' : 'application/json',
+            },
+            body : JSON.stringify({
+                ...word,
+                isDone : !isDone,
+            })
+        })
+        .then(res => {
+            if(res.ok) {
+                setIsDone(!isDone);
+            } else {
+                console.log("데이터 오류");
+            }
+        })
     }
+
+    const wordDel = () => {
+        if(window.confirm('정말 삭제 하시겠습니까?'))
+        fetch(`http://localhost:3001/words/${word.id}`, {
+            method: 'DELETE',
+        })
+        .then(res => {
+            if(res.ok) {
+                setWord({id:0})
+            }
+        })
+    }
+
+    if(word.id === 0) {
+        return null;
+    }
+
 
     return(
-        <tr className={isDone ? "off": ""}>
-            <td>
-                <input type='checkbox'
-                    onChange={toggleDone}
-                />
-            </td>
-            <td>{word.eng}</td>
-            <td>{word.kor && langageChange }</td>
-            <td>
-                <button onClick={showChange}>뜻 {langageChange ? "숨기기" : "보기"}</button>
-                <button className='btn_del'>삭제</button>
-            </td>
-        </tr>
+    <tr className={isDone ? "off" : ""}>
+        <td>
+            <input type="checkbox" checked={isDone} onChange={toggleDone} />
+        </td>
+        <td>{word.eng}</td>
+        <td>{isShow && word.kor}</td>
+        <td>
+            <button onClick={toggleShow}>뜻 {isShow ? "숨기기" : "보기"}</button>
+            <button className="btn_del" onClick={wordDel}>
+            삭제
+            </button>
+        </td>
+    </tr>
     )
 }
 
